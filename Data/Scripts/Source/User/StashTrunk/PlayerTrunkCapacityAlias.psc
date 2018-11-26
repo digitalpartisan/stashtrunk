@@ -14,4 +14,3 @@ EndEvent
 Event OnLocationChange(Location akOldLoc, Location akNewLoc)
 	attemptUpdate()
 EndEvent
-
