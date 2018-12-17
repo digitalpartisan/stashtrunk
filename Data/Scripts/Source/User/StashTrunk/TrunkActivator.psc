@@ -1,38 +1,55 @@
 Scriptname StashTrunk:TrunkActivator extends WorkshopObjectScript
 
 StashTrunk:ContainerHandler Property StashTrunk_ContainerHandler Auto Const Mandatory
-Chronicle:Package:Core Property StashTrunk_PackageCore Auto Const Mandatory
 
 Event Chronicle:Package.UninstallComplete(Chronicle:Package sender, Var[] arguments)
-	if (sender == StashTrunk_PackageCore)
+	if (StashTrunk_ContainerHandler.getEngine().getCorePackage() == sender)
+		watchCorePackage(false)
 		Disable()
 		Delete()
 	endif
 EndEvent
 
 Function watchCorePackage(Bool bWatch = true)
+	Chronicle:Package:Core corePackage = StashTrunk_ContainerHandler.getEngine().getCorePackage()
+
 	if (bWatch)
-		RegisterForCustomEvent(StashTrunk_PackageCore, "UninstallComplete")
+		RegisterForCustomEvent(corePackage, "UninstallComplete")
 	else
-		UnregisterForCustomEvent(StashTrunk_PackageCore, "UninstallComplete")
+		UnregisterForCustomEvent(corePackage, "UninstallComplete")
 	endif
 EndFunction
 
+Event OnInit()
+	watchCorePackage()
+EndEvent
+
 Event OnWorkshopObjectPlaced(ObjectReference akReference)
-	AddKeyword(StashTrunk_ContainerHandler.getWorkshopTrunkKeyword())
+	WorkshopScript workshopRef = akReference as WorkshopScript
+	if (workshopRef)
+		workshopRef.AddKeyword(StashTrunk_ContainerHandler.getSettlementKeyword())
+	endif
 	watchCorePackage()
 EndEvent
 
 Event OnWorkshopObjectDestroyed(ObjectReference akReference)
+	WorkshopScript workshopRef = akReference as WorkshopScript
+	if (workshopRef)
+		workshopRef.RemoveKeyword(StashTrunk_ContainerHandler.getSettlementKeyword())
+	endif
 	watchCorePackage(false)
 EndEvent
 
 WorkshopScript Function getWorkshop()
-	return WorkshopParent.GetWorkshop(workshopID)
+	if (workshopID > 0)
+		return WorkshopParent.GetWorkshop(workshopID)
+	endif
+	
+	return None
 EndFunction
 
-Bool Function validateIsWorkshopObject()
-	return HasKeyword(StashTrunk_ContainerHandler.getWorkshopTrunkKeyword()) && getWorkshop()
+Bool Function hasWorkshop()
+	return getWorkshop() as Bool
 EndFunction
 
 Event OnOpen(ObjectReference akActionRef)
@@ -40,7 +57,7 @@ Event OnOpen(ObjectReference akActionRef)
 EndEvent
 
 Event OnActivate(ObjectReference akActionRef)
-	if (StashTrunk_PackageCore.IsRunning())
+	if (StashTrunk_ContainerHandler.getEngine().getCorePackage().IsRunning())
 		StashTrunk_ContainerHandler.open()
 	endif
 EndEvent
