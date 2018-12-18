@@ -1,6 +1,9 @@
 Scriptname StashTrunk:TrunkActivator extends WorkshopObjectScript
 
-StashTrunk:ContainerHandler Property StashTrunk_ContainerHandler Auto Const Mandatory
+Group StashTrunkSettings
+	StashTrunk:ContainerHandler Property StashTrunk_ContainerHandler Auto Const Mandatory
+	Keyword Property StashTrunk_Keyword_Settlement Auto Const Mandatory
+EndGroup
 
 Event Chronicle:Package.UninstallComplete(Chronicle:Package sender, Var[] arguments)
 	if (StashTrunk_ContainerHandler.getEngine().getCorePackage() == sender)
@@ -27,7 +30,7 @@ EndEvent
 Event OnWorkshopObjectPlaced(ObjectReference akReference)
 	WorkshopScript workshopRef = akReference as WorkshopScript
 	if (workshopRef)
-		workshopRef.AddKeyword(StashTrunk_ContainerHandler.getSettlementKeyword())
+		workshopRef.AddKeyword(StashTrunk_Keyword_Settlement)
 	endif
 	watchCorePackage()
 EndEvent
@@ -35,7 +38,7 @@ EndEvent
 Event OnWorkshopObjectDestroyed(ObjectReference akReference)
 	WorkshopScript workshopRef = akReference as WorkshopScript
 	if (workshopRef)
-		workshopRef.RemoveKeyword(StashTrunk_ContainerHandler.getSettlementKeyword())
+		workshopRef.RemoveKeyword(StashTrunk_Keyword_Settlement)
 	endif
 	watchCorePackage(false)
 EndEvent

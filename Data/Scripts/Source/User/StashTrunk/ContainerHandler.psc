@@ -27,15 +27,15 @@ Message Function getNoFlushMessage()
 EndFunction
 
 Location Function pickFlushLocation(Location akSelectLocation)
-	return getSettlementLocationSelector().selectLocation(akSelectLocation)
+	return getSettlementLocationPicker().pickLocation(akSelectLocation)
 EndFunction
 
 Actor Function getUnderlyingContainer()
 	return ContainerAlias.GetActorRef()
 EndFunction
 
-StashTrunk:SettlementLocationSelector Function getSettlementLocationSelector()
-	return getUnderlyingContainer() as StashTrunk:SettlementLocationSelector
+SettlementLocationPicker Function getSettlementLocationPicker()
+	return getUnderlyingContainer() as SettlementLocationPicker
 EndFunction
 
 Function open()
