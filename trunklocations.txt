@@ -1,0 +1,48 @@
+Vaults:
+Vault 75: Inside the vault door
+Vault 81: Inside the vault door
+Vault 95: Inside the vault door
+Vault 111: Inside the vault door
+Vault 114: Inside the vault door
+Vault-Tec Regional HQ: In the lobby
+
+Faction HQs:
+Prydwen: Main Deck, in the workshop area
+Railroad: Near the workbenches to the left of the entrance
+
+Towns & Quest hubs:
+Diamond City: Outside Home Plate, near the Power Armor station
+Goodneighbor: Against the wall by Kill or Be Killed and Daisy's Discounts
+Institute: Just outside the elevator on the main level of the concourse
+
+General:
+Museum of Freedom
+Fort Hagen
+ArcJet Systems
+Corvega Assembly Plant
+Mass Fusion Containment Shed
+National Guard Training Yard
+Medford Memorial Hospital
+Kendall Hospital
+Sandy Coves Convalescent Home
+Longneck Lukowski's Cannery
+Crater of Atom
+Quincy Police Station
+Electrical Hobbyist's Club
+Milton General Hospital
+General Atomics Factory
+Dartmouth Professional Building
+Cabot House
+
+Far Harbor DLC:
+Far Harbor: Directly across from the Bait Shop
+Acadia: To the right of the second floor entrance
+Nucelus: Just around the corner from the Power Armor workbench
+Vault 118: Inside the vault door
+Vim! Pop Factory: Outside the guard shack
+Cranberry Island: Outside the shacks on top of the bog
+Shrine of Atom: Around the corner from the entrance
+Rayburn Point: By the stairs down to the lower deck
+Old Pond House: By the front stairs
+Aldersea Day Spa: Outside the building by the stairs coming up from the parking lot
+Horizon Flight 1207: By a pile of rubble near the dog cages
