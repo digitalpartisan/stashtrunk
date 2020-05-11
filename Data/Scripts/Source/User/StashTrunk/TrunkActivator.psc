@@ -2,7 +2,6 @@ Scriptname StashTrunk:TrunkActivator extends WorkshopObjectScript
 
 Group StashTrunkSettings
 	StashTrunk:ContainerHandler Property StashTrunk_ContainerHandler Auto Const Mandatory
-	Keyword Property StashTrunk_Keyword_Settlement Auto Const Mandatory
 EndGroup
 
 Event Chronicle:Package.UninstallComplete(Chronicle:Package sender, Var[] arguments)
@@ -28,18 +27,10 @@ Event OnInit()
 EndEvent
 
 Event OnWorkshopObjectPlaced(ObjectReference akReference)
-	WorkshopScript workshopRef = akReference as WorkshopScript
-	if (workshopRef)
-		workshopRef.AddKeyword(StashTrunk_Keyword_Settlement)
-	endif
 	watchCorePackage()
 EndEvent
 
 Event OnWorkshopObjectDestroyed(ObjectReference akReference)
-	WorkshopScript workshopRef = akReference as WorkshopScript
-	if (workshopRef)
-		workshopRef.RemoveKeyword(StashTrunk_Keyword_Settlement)
-	endif
 	watchCorePackage(false)
 EndEvent
 
@@ -56,7 +47,11 @@ Bool Function hasWorkshop()
 EndFunction
 
 Event OnOpen(ObjectReference akActionRef)
-	SetOpen(false) ; keeps the trunk closed when it isn't in use so players don't think they did something wrong or something broke
+	;SetOpen(false) ; keeps the trunk closed when it isn't in use so players don't think they did something wrong or something broke
+EndEvent
+
+Event OnClose(ObjectReference akActionRef)
+	;SetOpen(false) ; paranoia
 EndEvent
 
 Event OnActivate(ObjectReference akActionRef)

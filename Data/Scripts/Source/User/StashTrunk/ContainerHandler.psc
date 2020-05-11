@@ -26,16 +26,16 @@ Message Function getNoFlushMessage()
 	return StashTrunk_ContainerHandler_NoFlushMessage
 EndFunction
 
-Location Function pickFlushLocation(Location akSelectLocation)
-	return getSettlementLocationPicker().pickLocation(akSelectLocation)
+WorkshopScript Function pickFlushLocation(Location akSelectLocation)
+	return getSettlementLocationPicker().pick(akSelectLocation)
 EndFunction
 
 Actor Function getUnderlyingContainer()
 	return ContainerAlias.GetActorRef()
 EndFunction
 
-SettlementLocationPicker Function getSettlementLocationPicker()
-	return getUnderlyingContainer() as SettlementLocationPicker
+SimpleSettlementSolutions:Picker Function getSettlementLocationPicker()
+	return getUnderlyingContainer() as SimpleSettlementSolutions:Picker
 EndFunction
 
 Function open()
@@ -50,22 +50,13 @@ Event OnQuestInit()
 	updateCarryWeight()
 EndEvent
 
-Function flushToLocation(Location akFlushTarget)
+Function flushToTarget(WorkshopScript akFlushTarget)
 	if (!akFlushTarget)
 		getNoFlushMessage().Show()
 		return 
 	endif
 
-	WorkshopScript result = WorkshopParent.getWorkshopFromLocation(akFlushTarget)
-	if (!result)
-		result = WorkshopParent.getWorkshopFromLocation(getDefaultFlushLocation())
-	endif
-	
-	if (result)
-		getUnderlyingContainer().RemoveAllItems(result.GetContainer(), true)
-	else
-		getNoFlushMessage().Show()
-	endif
+	getUnderlyingContainer().RemoveAllItems(akFlushTarget.GetContainer(), true)
 EndFunction
 
 Function flush(ObjectReference akTargetRef = None)
@@ -75,5 +66,5 @@ Function flush(ObjectReference akTargetRef = None)
 		selectLocation = activatorRef.getWorkshop().myLocation
 	endif
 	
-	flushToLocation(pickFlushLocation(selectLocation))
+	flushToTarget(pickFlushLocation(selectLocation))
 EndFunction
