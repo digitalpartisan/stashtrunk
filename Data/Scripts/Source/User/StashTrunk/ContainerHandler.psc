@@ -2,24 +2,42 @@ Scriptname StashTrunk:ContainerHandler extends Quest
 
 Group ContainerSettings
 	ReferenceAlias Property ContainerAlias Auto Const Mandatory
+	{Autofill}
 	ActorValue Property CarryWeight Auto Const Mandatory
+	{Autofill}
 	GlobalVariable Property StashTrunk_CaryWeightScale Auto Const Mandatory
+	{Autofill}
 EndGroup
 
 Group FlushSettings
-	Location Property DefaultFlushLocation Auto Const Mandatory
+	WorkshopScript Property RedRocketWorkshopREF Auto Const Mandatory
+	{Autofill}
 	Message Property StashTrunk_ContainerHandler_NoFlushMessage Auto Const Mandatory
+	{Autofill}
 EndGroup
 
 WorkshopParentScript Property WorkshopParent Auto Const Mandatory
 Chronicle:Engine Property StashTrunk_Engine Auto Const Mandatory
 
+StashTrunk:ContainerHandler Function getInstance() Global
+	return Game.GetFormFromFile(0x0000082E, "StashTrunk.esl") as StashTrunk:ContainerHandler
+EndFunction
+
 Chronicle:Engine Function getEngine()
 	return StashTrunk_Engine
 EndFunction
 
+WorkshopScript Function getDefaultFlushWorkshop()
+	return RedRocketWorkshopREF
+EndFunction
+
 Location Function getDefaultFlushLocation()
-	return DefaultFlushLocation
+	WorkshopScript defaultWorkshop = getDefaultFlushWorkshop()
+	if (defaultWorkshop)
+		return defaultWorkshop.myLocation
+	endif
+	
+	return None
 EndFunction
 
 Message Function getNoFlushMessage()
@@ -62,9 +80,16 @@ EndFunction
 Function flush(ObjectReference akTargetRef = None)
 	Location selectLocation = None
 	StashTrunk:TrunkActivator activatorRef = akTargetRef as StashTrunk:TrunkActivator
-	if (activatorRef && activatorRef.hasWorkshop())
-		selectLocation = activatorRef.getWorkshop().myLocation
+	if (activatorRef)
+		WorkshopScript activatorWorkshop = SimpleSettlementSolutions:Reference.getWorkshopReference(activatorRef)
+		if (activatorWorkshop)
+			selectLocation = activatorWorkshop.myLocation
+		endif
 	endif
 	
 	flushToTarget(pickFlushLocation(selectLocation))
+EndFunction
+
+Function uninstallFlush()
+	flushToTarget(getDefaultFlushWorkshop())
 EndFunction
