@@ -1,7 +1,9 @@
-Scriptname StashTrunk:ContainerHandler extends Quest
+Scriptname StashTrunk:ContainerHandler extends Quest Conditional
 
 Group ContainerSettings
-	ReferenceAlias Property ContainerAlias Auto Const Mandatory
+	ReferenceAlias Property PickerAlias Auto Const Mandatory
+	{Autofill}
+	ObjectReference Property StashTrunkContainer Auto Const Mandatory
 	{Autofill}
 	ActorValue Property CarryWeight Auto Const Mandatory
 	{Autofill}
@@ -18,6 +20,16 @@ EndGroup
 
 WorkshopParentScript Property WorkshopParent Auto Const Mandatory
 Chronicle:Engine Property StashTrunk_Engine Auto Const Mandatory
+
+Bool bOverrideWorkbenchActivation = false Conditional
+
+Bool Function getOverrideWorkbenchActivation()
+	return bOverrideWorkbenchActivation
+EndFunction
+
+Function toggleOverrideWorkbenchActivation()
+	bOverrideWorkbenchActivation = !bOverrideWorkbenchActivation
+EndFunction
 
 StashTrunk:ContainerHandler Function getInstance() Global
 	return Game.GetFormFromFile(0x0000082E, "StashTrunk.esl") as StashTrunk:ContainerHandler
@@ -48,20 +60,21 @@ WorkshopScript Function pickFlushLocation(Location akSelectLocation)
 	return getSettlementLocationPicker().pick(akSelectLocation)
 EndFunction
 
-Actor Function getUnderlyingContainer()
-	return ContainerAlias.GetActorRef()
+ObjectReference Function getContainer()
+	return StashTrunkContainer
 EndFunction
 
 SimpleSettlementSolutions:Picker Function getSettlementLocationPicker()
-	return getUnderlyingContainer() as SimpleSettlementSolutions:Picker
+	return PickerAlias.GetActorRef() as SimpleSettlementSolutions:Picker
 EndFunction
 
 Function open()
-	getUnderlyingContainer().OpenInventory(true)
+	getContainer().Activate(Game.GetPlayer())
 EndFunction
 
 Function updateCarryWeight()
-	getUnderlyingContainer().SetValue(CarryWeight, StashTrunk_CaryWeightScale.GetValue() * Game.GetPlayer().GetValue(CarryWeight))
+	;PickerAlias.GetActorRef().SetValue(CarryWeight, StashTrunk_CaryWeightScale.GetValue() * Game.GetPlayer().GetValue(CarryWeight))
+	getContainer().SetValue(CarryWeight, 1)
 EndFunction
 
 Event OnQuestInit()
@@ -74,7 +87,7 @@ Function flushToTarget(WorkshopScript akFlushTarget)
 		return 
 	endif
 
-	getUnderlyingContainer().RemoveAllItems(akFlushTarget.GetContainer(), true)
+	getContainer().RemoveAllItems(akFlushTarget.GetContainer(), true)
 EndFunction
 
 Function flush(ObjectReference akTargetRef = None)
