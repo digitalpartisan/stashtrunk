@@ -11,5 +11,5 @@ Event OnPlayerLoadGame()
 EndEvent
 
 Event OnGetUp(ObjectReference akFurniture)
-	StashTrunk_WorkbenchScanner.handleContentsTransfer(akFurniture)
+	StashTrunk:ContainerHandler.getInstance().takeContents(akFurniture)
 EndEvent

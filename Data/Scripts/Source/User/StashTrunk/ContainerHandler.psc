@@ -1,4 +1,4 @@
-Scriptname StashTrunk:ContainerHandler extends Quest Conditional
+Scriptname StashTrunk:ContainerHandler extends Quest
 
 Group ContainerSettings
 	ReferenceAlias Property PickerAlias Auto Const Mandatory
@@ -21,18 +21,46 @@ EndGroup
 WorkshopParentScript Property WorkshopParent Auto Const Mandatory
 Chronicle:Engine Property StashTrunk_Engine Auto Const Mandatory
 
-Bool bOverrideWorkbenchActivation = false Conditional
-
-Bool Function getOverrideWorkbenchActivation()
-	return bOverrideWorkbenchActivation
-EndFunction
-
-Function toggleOverrideWorkbenchActivation()
-	bOverrideWorkbenchActivation = !bOverrideWorkbenchActivation
-EndFunction
-
 StashTrunk:ContainerHandler Function getInstance() Global
 	return Game.GetFormFromFile(0x0000082E, "StashTrunk.esl") as StashTrunk:ContainerHandler
+EndFunction
+
+Bool Function isValidLinkTarget(ObjectReference akTargetRef)
+	return SimpleSettlementSolutions:Reference.isWorkbench(akTargetRef) && !SimpleSettlementSolutions:Reference.isWorkshopItem(akTargetRef)
+EndFunction
+
+Bool Function isLinked(ObjectReference akTargetRef)
+	ObjectReference containerRef = getContainer()
+	return containerRef == SimpleSettlementSolutions:Reference.getLinkedRef(akTargetRef, SimpleSettlementSolutions:Utility:Keyword.getWorkshopItem()) && containerRef == SimpleSettlementSolutions:Reference.getLinkedRef(akTargetRef, SimpleSettlementSolutions:Utility:Keyword.getContainerLink())
+EndFunction
+
+Bool Function linkWorkbench(ObjectReference akTargetRef)
+	if (!akTargetRef || !isValidLinkTarget(akTargetRef))
+		return false
+	endif
+	
+	StashTrunk:Logger.log("linking workbench: " + akTargetRef)
+	ObjectReference containerRef = getContainer()
+	SimpleSettlementSolutions:Reference.linkToWorkshop(akTargetRef, containerRef)
+	SimpleSettlementSolutions:Reference.linkToContainer(akTargetRef, containerRef)
+	
+	return true
+EndFunction
+
+Bool Function unlinkWorkbench(ObjectReference akTargetRef)
+	if (!akTargetRef || !isLinked(akTargetRef))
+		return false
+	endif
+	
+	StashTrunk:Logger.log("unlinking workbench: " + akTargetRef)
+	SimpleSettlementSolutions:Reference.unlinkFromContainer(akTargetRef)
+	SimpleSettlementSolutions:Reference.unlinkFromWorkshop(akTargetRef)
+	
+	return true
+EndFunction
+
+Function takeContents(ObjectReference akTargetRef)
+	isLinked(akTargetRef) && akTargetRef.RemoveAllItems(getContainer(), true)
 EndFunction
 
 Chronicle:Engine Function getEngine()
