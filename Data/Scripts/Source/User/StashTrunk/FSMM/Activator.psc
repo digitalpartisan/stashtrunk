@@ -23,8 +23,6 @@ Message Property StashTrunk_FSMM_Activator_Message_Scrap Auto Const Mandatory
 {Autofill}
 Message Property StashTrunk_FSMM_Activator_Message_ScrapAll Auto Const Mandatory
 {Autofill}
-Message Property StashTrunk_FSMM_Activator_Message_ScrapAuto Auto Const Mandatory
-{Autofill}
 Message Property StashTrunk_FSMM_Activator_Message_ScrapPrompt Auto Const Mandatory
 {Autofill}
 Message Property StashTrunk_FSMM_Activator_Message_ScrappingComplete Auto Const Mandatory
@@ -81,23 +79,28 @@ Function cleanupReferences()
 EndFunction
 
 Event SimpleSettlementSolutions:Scrapper.Processed(SimpleSettlementSolutions:Scrapper sender, Var[] args)
-	if (sender == scrapContainer)
-		BlockActivation(false, false)
-		StashTrunk_FSMM_Activator_Message_ScrappingComplete.Show()
-		scrapContainer.RemoveAllItems(Game.GetPlayer(), true)
+	if (sender != scrapContainer)
+		return
 	endif
+	
+	StashTrunk:Logger.log(self + " finished processing")
+	BlockActivation(false, false)
+	StashTrunk_FSMM_Activator_Message_ScrappingComplete.Show()
+	scrapContainer.RemoveAllItems(Game.GetPlayer(), true)
 EndEvent
 
 Event SimpleSettlementSolutions:Scrapper.Pulled(SimpleSettlementSolutions:Scrapper sender, Var[] args)
-	if (sender == scrapContainer)
-		BlockActivation(false, false)
-		scrap()
+	if (sender != scrapContainer)
+		return
 	endif
+	
+	StashTrunk:Logger.log(self + " finished pulling")
+	scrap()
 EndEvent
 
 Function openScrapContainer()
+	StashTrunk:Logger.log(self + " opening scrap container")
 	RegisterForRemoteEvent(scrapContainer, "OnClose")
-	scrapContainer.BlockActivation(false, false)
 	scrapContainer.Activate(Game.GetPlayer(), true)
 EndFunction
 
@@ -106,9 +109,9 @@ Event ObjectReference.OnClose(ObjectReference akSender, ObjectReference AkAction
 		return
 	endif
 	
-	scrapContainer.BlockActivation(true, true)
+	StashTrunk:Logger.log(self + " scrap container closed")
 	UnregisterForRemoteEvent(scrapContainer, "OnClose")
-	scrapContainer.GetItemCount(None) && scrapJunkInContainerWithPrompt(0)
+	scrapContainer.GetItemCount(None) && scrapContainer(0)
 EndEvent
 
 Function activateReference(ObjectReference akTargetRef)
@@ -116,12 +119,11 @@ Function activateReference(ObjectReference akTargetRef)
 		return
 	endif
 	
-	akTargetRef.BlockActivation(false, true)
-	akTargetRef.Activate(Game.GetPlayer(), false)
-	akTargetRef.BlockActivation(true, true)
+	akTargetRef.Activate(Game.GetPlayer(), true)
 EndFunction
 
 Function scrap()
+	StashTrunk:Logger.log(self + " started scrapping")
 	BlockActivation(true, true)
 	scrapContainer.process(StashTrunk:ContainerHandler.getInstance().getContainer())
 EndFunction
@@ -134,33 +136,29 @@ Function pickUp()
 	Game.GetPlayer().AddItem(StashTrunk_FSMM_InventoryItem, 1, false)
 EndFunction
 
-Function scrapAllAuto()
-	BlockActivation(true, true)
-	scrapContainer.pull(Game.GetPlayer())
-EndFunction
-
-Function scrapAllAutoWithPrompt(Int iButton)
-	iButton = StashTrunk_FSMM_Activator_Message_ScrapAuto.Show()
+Function scrapAll(Int iButton)
+	iButton = StashTrunk_FSMM_Activator_Message_ScrapAll.Show()
 	if (0 == iButton)
-		scrapAllAuto()
+		StashTrunk:Logger.log(self + " starting pulling")
+		BlockActivation(true, true)
+		scrapContainer.pull(Game.GetPlayer())
 	else
 		showScrapMenu(0)
 	endif
 EndFunction
 
-Function scrapJunkInContainerWithPrompt(Int iButton)
+Function scrapContainer(Int iButton)
 	iButton = StashTrunk_FSMM_Activator_Message_ScrapPrompt.Show()
-	if (0 == iButton)
-		scrap()
-	else
-		scrapContainer.RemoveAllItems(Game.GetPlayer(), true)
-	endif
+	0 == iButton && scrap()
+	1 == iButton && scrapContainer.RemoveAllItems(Game.GetPlayer(), true)
+	2 == iButton && showScrapMenu(0)
 EndFunction
 
 Function showScrapMenu(Int iButton)
 	iButton = StashTrunk_FSMM_Activator_Message_Scrap.Show()
-	0 == iButton && scrapAllAutoWithPrompt(0)
-	1 == iButton && openScrapContainer()
+	0 == iButton && scrapAll(0)
+	1 == iButton && scrapContainer(0)
+	2 == iButton && openScrapContainer()
 EndFunction
 
 Function showMainMenu(Int iButton)
