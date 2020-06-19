@@ -5,10 +5,6 @@ Group ContainerSettings
 	{Autofill}
 	ObjectReference Property StashTrunkContainer Auto Const Mandatory
 	{Autofill}
-	ActorValue Property CarryWeight Auto Const Mandatory
-	{Autofill}
-	GlobalVariable Property StashTrunk_CaryWeightScale Auto Const Mandatory
-	{Autofill}
 EndGroup
 
 Group FlushSettings
@@ -99,15 +95,6 @@ EndFunction
 Function open()
 	getContainer().Activate(Game.GetPlayer())
 EndFunction
-
-Function updateCarryWeight()
-	;PickerAlias.GetActorRef().SetValue(CarryWeight, StashTrunk_CaryWeightScale.GetValue() * Game.GetPlayer().GetValue(CarryWeight))
-	getContainer().SetValue(CarryWeight, 1)
-EndFunction
-
-Event OnQuestInit()
-	updateCarryWeight()
-EndEvent
 
 Function flushToTarget(WorkshopScript akFlushTarget)
 	if (!akFlushTarget)
