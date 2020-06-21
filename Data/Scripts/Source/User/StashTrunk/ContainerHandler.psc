@@ -88,8 +88,8 @@ ObjectReference Function getContainer()
 	return StashTrunkContainer
 EndFunction
 
-SimpleSettlementSolutions:Picker Function getSettlementLocationPicker()
-	return PickerAlias.GetActorRef() as SimpleSettlementSolutions:Picker
+SimpleSettlementSolutions:Workshop:Picker Function getSettlementLocationPicker()
+	return PickerAlias.GetActorRef() as SimpleSettlementSolutions:Workshop:Picker
 EndFunction
 
 Function open()
