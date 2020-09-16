@@ -1,2 +1,0 @@
-SCAFFOLD_MOD="StashTrunk"
-SCAFFOLD_GAME="fallout4"
