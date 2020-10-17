@@ -32,7 +32,7 @@ Sound Property UIWorkshopModeItemScrapGeneric Auto Const Mandatory
 Sound Property StashTrunk_FSMM_PlacementSound Auto Const Mandatory
 {Autofill}
 
-SimpleSettlementSolutions:Scrapper scrapContainer = None
+Jiffy:Scrapper scrapContainer = None
 ObjectReference workbenchArmor = None
 ObjectReference workbenchChems = None
 ObjectReference workbenchCooking = None
@@ -54,7 +54,7 @@ Function removeReference(ObjectReference akTargetRef)
 EndFunction
 
 Function initializeReferences()
-	scrapContainer = placeReference(StashTrunk_FSMM_ScrapBox) as SimpleSettlementSolutions:Scrapper
+	scrapContainer = placeReference(StashTrunk_FSMM_ScrapBox) as Jiffy:Scrapper
 	RegisterForCustomEvent(scrapContainer, "Processing")
 	RegisterForCustomEvent(scrapContainer, "Processed")
 	RegisterForCustomEvent(scrapContainer, "Pulling")
@@ -78,7 +78,7 @@ Function cleanupReferences()
 	removeReference(workbenchWeapon)
 EndFunction
 
-Event SimpleSettlementSolutions:Scrapper.Processed(SimpleSettlementSolutions:Scrapper sender, Var[] args)
+Event Jiffy:Scrapper.Processed(Jiffy:Scrapper sender, Var[] args)
 	if (sender != scrapContainer)
 		return
 	endif
@@ -89,7 +89,7 @@ Event SimpleSettlementSolutions:Scrapper.Processed(SimpleSettlementSolutions:Scr
 	scrapContainer.RemoveAllItems(Game.GetPlayer(), true)
 EndEvent
 
-Event SimpleSettlementSolutions:Scrapper.Pulled(SimpleSettlementSolutions:Scrapper sender, Var[] args)
+Event Jiffy:Scrapper.Pulled(Jiffy:Scrapper sender, Var[] args)
 	if (sender != scrapContainer)
 		return
 	endif
