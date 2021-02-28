@@ -1,2 +1,5 @@
+v1.1.0
+Added Special Objects menu Stash Trunk option per user request.
+
 v1.0.0
 Initial Release
